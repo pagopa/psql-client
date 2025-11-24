@@ -1,0 +1,43 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Docker tag"
+        required: true
+        default: "latest"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/psql
+          TAG="${{ github.event.inputs.tag }}"
+          [ -z "$TAG" ] && TAG="latest"
+          echo "Building image [$IMAGE:$TAG]"
+          docker build --tag $IMAGE:$TAG .
+
+      - name: Push Docker image
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/psql
+          TAG="${{ github.event.inputs.tag }}"
+          echo "Pushing image [$IMAGE:$TAG]"
+          docker push $IMAGE:$TAG
+
