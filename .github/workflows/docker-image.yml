@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/psql
+          IMAGE=ghcr.io/${{ github.repository_owner }}/psql-client
           TAG="${{ github.event.inputs.tag }}"
           [ -z "$TAG" ] && TAG="latest"
           echo "Building image [$IMAGE:$TAG]"
@@ -35,7 +35,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/psql
+          IMAGE=ghcr.io/${{ github.repository_owner }}/psql-client
           TAG="${{ github.event.inputs.tag }}"
           echo "Pushing image [$IMAGE:$TAG]"
           docker push $IMAGE:$TAG
